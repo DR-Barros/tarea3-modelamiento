@@ -9,41 +9,35 @@ import grafica.easy_shaders as es
 import grafica.lighting_shaders as ls
 from grafica.assets_path import getAssetPath
 
+class Controller:
+    def __init__(self):
+        self.theta = np.pi/2
+        self.phi = 0
+        self.position = np.array([5*np.sin(self.theta)*np.cos(self.phi), 5*np.sin(self.theta)*np.sin(self.phi), 5*np.cos(self.theta)])
+    def arriba(self):
+        self.theta -= np.pi/40
+        self.__actualizarposition__()
+    def abajo(self):
+        self.theta += np.pi/40
+        self.__actualizarposition__()
+    def derecha(self):
+        self.phi += np.pi/40
+        self.__actualizarposition__()
+    def izquierda(self):
+        self.phi -= np.pi/40
+        self.__actualizarposition__()
+    def __actualizarposition__(self):
+        self.position = np.array([5*np.sin(self.theta)*np.cos(self.phi), 5*np.sin(self.theta)*np.sin(self.phi), 5*np.cos(self.theta)])
+
+controller = Controller()
+
 # funcion para facilitar inicialización
 def createGPUShape(shape, pipeline):
     gpuShape = es.GPUShape().initBuffers()
     pipeline.setupVAO(gpuShape)
     gpuShape.fillBuffers(shape.vertices, shape.indices, GL_STATIC_DRAW)
     return gpuShape
-
-#Funcion crear esfera
-def crearEsfera(N, r,g,b):
-    vertices = []
-    indices = []
-    angulo = 2 * np.pi
-    n = int(N/2)
-    for i in range(N):
-        indices += [N*n, i*n, ((i+1)*n)%(N*n)]
-        omega = i/N * angulo
-        for j in range(n):
-            theta = ((j)/(N-1) * angulo)
-            vertices += [
-                    np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta), abs(r), abs(g), abs(b)
-                ]
-        for j in range(n-1):
-            indices += [
-                n*i+j, n*i+1+j, (n*(i+1)+j)%(N*n),
-                n*i+1+j, (n*(i+1)+j)%(N*n), (n*(i+1)+1+j)%(N*n),
-            ]
-        indices += [N*n+1, (i*n-1)%(N*n), ((i+1)*n-1)%(N*n)]
-    
-    vertices += [
-        0, 0, 1, r, g, b,
-        0, 0, -1, r, g, b 
-    ] 
-    return bs.Shape(vertices, indices)
-
-def esferaPhong(N, r, g, b):
+def esferaPhong(N):
     vertices = []
     faces = []
     angulo = 2 * np.pi
@@ -57,13 +51,13 @@ def esferaPhong(N, r, g, b):
             theta = j/(N)* angulo
             vertices += [
                 [np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta),
-                abs(r), abs(g), abs(b),
+                i/N, j/n,
                 np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta)],
             ]
             if i != N:
                 faces +=[
-                    [n*i+j, n*i+1+j, (n*(i+1)+j)%(N*n)],
-                    [n*i+1+j, (n*(i+1)+j)%(N*n), (n*(i+1)+1+j)%(N*n)]
+                    [(n+1)*i+j, (n+1)*i+1+j, ((n+1)*(i+1)+j)%((N+1)*(n+1))],
+                    [(n+1)*i+1+j, ((n+1)*(i+1)+j)%((N+1)*(n+1)), ((n+1)*(i+1)+1+j)%((N+1)*(n+1))]
                 ]
     indices = []
     vertexData = []
@@ -82,75 +76,22 @@ def esferaPhong(N, r, g, b):
     return bs.Shape(vertexData, indices)
 
 
-
-#post procesado de shapes para usar en lightning pipelines
-def postPL(Shape, color):
-    Vertices = Shape.vertices
-    numVertices = len(Vertices)//6
-    vert2 = []
-    for i in range(len(Vertices)//6):
-        vert2 += [Vertices[i*6], Vertices[i*6+1], Vertices[i*6+2]]
-    indices = Shape.indices
-    numFaces = len(indices)//3
-    vertices = np.asarray(vert2)
-    vertices = np.reshape(vertices, (numVertices, 3))
-    normals = np.zeros((numVertices,3), dtype=np.float32)
-    faces = []
-    for i in range(numFaces):
-        aux = [indices[i*3], indices[i*3+1], indices[i*3+2]]
-        faces += [aux[0:]]
-        
-        vecA = [vertices[aux[1]][0] - vertices[aux[0]][0], vertices[aux[1]][1] - vertices[aux[0]][1], vertices[aux[1]][2] - vertices[aux[0]][2]]
-        vecB = [vertices[aux[2]][0] - vertices[aux[1]][0], vertices[aux[2]][1] - vertices[aux[1]][1], vertices[aux[2]][2] - vertices[aux[1]][2]]
-
-        res = np.cross(vecA, vecB)
-        normals[aux[0]][0] += res[0]  
-        normals[aux[0]][1] += res[1]  
-        normals[aux[0]][2] += res[2]  
-
-        normals[aux[1]][0] += res[0]  
-        normals[aux[1]][1] += res[1]  
-        normals[aux[1]][2] += res[2]  
-
-        normals[aux[2]][0] += res[0]  
-        normals[aux[2]][1] += res[1]  
-        normals[aux[2]][2] += res[2]  
-    #print(faces)
-    norms = np.linalg.norm(normals,axis=1)
-    normals = normals/norms[:,None]
-
-    color = np.asarray(color)
-    color = np.tile(color, (numVertices, 1))
-
-    vertexData = np.concatenate((vertices, color), axis=1)
-    vertexData = np.concatenate((vertexData, normals), axis=1)
-
-
-    indices = []
-    vertexDataF = []
-    index = 0
-
-    for face in faces:
-        vertex = vertexData[face[0],:]
-        vertexDataF += vertex.tolist()
-        vertex = vertexData[face[1],:]
-        vertexDataF += vertex.tolist()
-        vertex = vertexData[face[2],:]
-        vertexDataF += vertex.tolist()
-        
-        indices += [index, index + 1, index + 2]
-        index += 3        
-
-
-    return bs.Shape(vertexDataF, indices)
-
 def on_key(window, key, scancode, action, mods):
     #Si no se presiona una tecla no hace nada
     if action != glfw.PRESS:
         return
 
+    global controller
     if key == glfw.KEY_ESCAPE:
         glfw.set_window_should_close(window, True)
+    if key == glfw.KEY_W:
+        controller.arriba()
+    if key == glfw.KEY_S:
+        controller.abajo()
+    if key == glfw.KEY_D:
+        controller.derecha()
+    if key == glfw.KEY_A:
+        controller.izquierda()
 
 
 def main():
@@ -174,7 +115,7 @@ def main():
     glfw.set_key_callback(window, on_key)
 
     #Ensamblando el shader program
-    pipeline = ls.SimplePhongShaderProgram()
+    pipeline = ls.SimpleTexturePhongShaderProgram()
 
 
     #mandar a OpenGL a usar el shader program
@@ -187,25 +128,28 @@ def main():
     # and which one is at the back
     glEnable(GL_DEPTH_TEST)
 
+
+    global controller
     #Proyeccion
     proyeccion = tr.perspective(60, float(1500)/float(1000), 0.001, 200)
     view = tr.lookAt(
-        np.array([5, 5, 3]),
+        controller.position,
         np.array ([0,0, 0]),
         np.array([0,0,1])
     )
 
     #Crear shapes en la GPU memory
-    #planeta = createGPUShape(postPL(crearEsfera(10, 1, 1, 1), [1,1,1]), pipeline)
-    planeta = createGPUShape(esferaPhong(100, 1, 1, 1), pipeline)
-
+    planeta = createGPUShape(esferaPhong(100), pipeline)
+    planeta.texture = es.textureSimpleSetup(
+        getAssetPath("jupiter.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR
+    )
 
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 1.0, 1.0, 1.0)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ls"), 1.0, 1.0, 1.0)
 
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ka"), 0.7, 0.7, 0.7)
-    glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 1.0, 0.7, 0.0)
+    glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Kd"), 1.0, 0.7, 1.0)
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0, 0, 0)
 
     glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "lightPosition"), 1, 1, 1)
@@ -219,7 +163,11 @@ def main():
         #usar GLFW para chequear input events
         glfw.poll_events()
 
-
+        view = tr.lookAt(
+            controller.position,
+            np.array ([0,0, 0]),
+            np.array([0,0,1])
+        )
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, proyeccion)
 

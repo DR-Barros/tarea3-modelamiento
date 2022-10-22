@@ -211,7 +211,7 @@ def crearEsfera(N, r,g,b):
     return bs.Shape(vertices, indices)
 
 #Funcion crear esfera para phong
-def esferaPhong(N, r, g, b):
+def esferaPhong(N):
     vertices = []
     faces = []
     angulo = 2 * np.pi
@@ -220,18 +220,17 @@ def esferaPhong(N, r, g, b):
         omega = i/N * angulo
         if i == N:
             omega = 0
-            print(0)
         for j in range(n+1):
             theta = j/(N)* angulo
             vertices += [
                 [np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta),
-                abs(r), abs(g), abs(b),
+                i/N, j/n,
                 np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta)],
             ]
             if i != N:
                 faces +=[
-                    [n*i+j, n*i+1+j, (n*(i+1)+j)%(N*n)],
-                    [n*i+1+j, (n*(i+1)+j)%(N*n), (n*(i+1)+1+j)%(N*n)]
+                    [(n+1)*i+j, (n+1)*i+1+j, ((n+1)*(i+1)+j)%((N+1)*(n+1))],
+                    [(n+1)*i+1+j, ((n+1)*(i+1)+j)%((N+1)*(n+1)), ((n+1)*(i+1)+1+j)%((N+1)*(n+1))]
                 ]
     indices = []
     vertexData = []
@@ -248,6 +247,7 @@ def esferaPhong(N, r, g, b):
         index += 3  
     
     return bs.Shape(vertexData, indices)
+
 
 #Funcion crear anillo
 def crearAnillo(N, R, r, g, b):
@@ -381,22 +381,29 @@ def evaluarCurva(Matriz, N):
 
 #Crear sistema solar scene graph
 def createSystem(pipeline):
-    #mercurioShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0, 1 ,0)), pipeline)
-    mercurioShape = createGPUShape(esferaPhong(100, 0, 1, 0), pipeline)
-    #venusShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0, 1 ,1)), pipeline)
-    venusShape = createGPUShape(esferaPhong(100, 0, 1, 1), pipeline)
-    tierraShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0, 0 ,1)), pipeline)
-    tierraShape = createGPUShape(esferaPhong(100, 0, 0, 1), pipeline)
-    lunaShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (1, 1 ,1)), pipeline)
-    marteShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (1, 0 ,0)), pipeline)
-    jupiterShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (1, 0 ,1)), pipeline)
-    saturnoShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0.5, 1 ,0.5)), pipeline)
+    mercurioShape = createGPUShape(esferaPhong(100), pipeline)
+    mercurioShape.texture = es.textureSimpleSetup(getAssetPath("mercurio.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    venusShape = createGPUShape(esferaPhong(100), pipeline)
+    venusShape.texture = es.textureSimpleSetup(getAssetPath("venus.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    tierraShape = createGPUShape(esferaPhong(100), pipeline)
+    tierraShape.texture = es.textureSimpleSetup(getAssetPath("tierra.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    lunaShape = createGPUShape(esferaPhong(100), pipeline)
+    lunaShape.texture = es.textureSimpleSetup(getAssetPath("luna.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    marteShape = createGPUShape(esferaPhong(100), pipeline)
+    marteShape.texture = es.textureSimpleSetup(getAssetPath("marte.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    jupiterShape = createGPUShape(esferaPhong(100), pipeline)
+    jupiterShape.texture = es.textureSimpleSetup(getAssetPath("jupiter.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    saturnoShape = createGPUShape(esferaPhong(100), pipeline)
+    saturnoShape.texture = es.textureSimpleSetup(getAssetPath("saturno.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
     anillo1Shape = createGPUShape(postPL(crearAnillo(100, 1, 1, 1, 1), (1, 1, 1)), pipeline)
     anillo2Shape = createGPUShape(postPL(crearAnillo(100, 1.15, 0.8, 0.8, 0.8),(0.8,0.8,0.8)), pipeline)
     anillo3Shape = createGPUShape(postPL(crearAnillo(100, 1.3, 0.6, 0.6, 0.6), (0.6,0.6,0.6)), pipeline)
-    uranoShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (1 ,0.5, 0)), pipeline)
-    neptunoShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0.5, 0.8, 0)), pipeline)
-    plutonShape = createGPUShape(bs.readOFF(getAssetPath('sphere.off'), (0.1, 0.8, 0.5)), pipeline)
+    uranoShape = createGPUShape(esferaPhong(100), pipeline)
+    uranoShape.texture = es.textureSimpleSetup(getAssetPath("urano.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    neptunoShape = createGPUShape(esferaPhong(100), pipeline)
+    neptunoShape.texture = es.textureSimpleSetup(getAssetPath("neptuno.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
+    plutonShape = createGPUShape(esferaPhong(100), pipeline)
+    plutonShape.texture = es.textureSimpleSetup(getAssetPath("pluton.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
     cometaShape = createGPUShape(postPL(crearCometa(100, 136/255, 9/255, 123/255), (136/255, 9/255, 123/255)), pipeline)
 
     mercurioNode = sg.SceneGraphNode("mercurioNode")
@@ -457,7 +464,10 @@ def createSystem(pipeline):
     anillosNode.childs += [anillo1Node, anillo2Node, anillo3Node]
     sistemaSaturno = sg.SceneGraphNode("sistemaSaturno")
     sistemaSaturno.transform = tr.translate(-23.8, 0, 0)
-    sistemaSaturno.childs += [saturnoNode, anillosNode]
+    sistemaSaturno.childs += [
+        saturnoNode, 
+        #anillosNode
+    ]
 
     uranoNode = sg.SceneGraphNode("uranoNode")
     uranoNode.transform = tr.uniformScale(0.4)
@@ -498,7 +508,7 @@ def createSystem(pipeline):
         uranoTranslation,
         neptunoTranslation,
         plutonTranslation,
-        cometaTranslation
+        #cometaTranslation
     ]
 
     return systemNode
@@ -788,6 +798,7 @@ def main():
     #Ensamblando el shader program
     MVPpipeline = es.SimpleModelViewProjectionShaderProgram()
     pipeline = ls.SimplePhongShaderProgram()
+    textpipeline = ls.SimpleTexturePhongShaderProgram()
 
 
     #mandar a OpenGL a usar el shader program
@@ -805,7 +816,7 @@ def main():
 
     #Crear shapes en la GPU memory
     gpuAxis = createGPUShape(bs.createAxis(7), MVPpipeline)
-    sistemaSolar = createSystem(pipeline)
+    sistemaSolar = createSystem(textpipeline)
     sol = createGPUShape(crearEsfera(100, 1, 1, 0), MVPpipeline)
     fondo = createStars(MVPpipeline)
     figther = createFighter(pipeline)
@@ -825,6 +836,24 @@ def main():
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "constantAttenuation"), 0.001)
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "linearAttenuation"), 0.1)
     glUniform1f(glGetUniformLocation(pipeline.shaderProgram, "quadraticAttenuation"), 0.01)
+
+    glUseProgram(textpipeline.shaderProgram)
+
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "Ld"), 1.0, 1.0, 1.0)
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "Ls"), 1.0, 1.0, 1.0)
+
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "Ka"), 0.7, 0.7, 0.7)
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "Kd"), 1.0, 0.7, 0.0)
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "Ks"), 0, 0, 0)
+
+    glUniform3f(glGetUniformLocation(textpipeline.shaderProgram, "lightPosition"), 0, 0, 0)
+    
+    glUniform1ui(glGetUniformLocation(textpipeline.shaderProgram, "shininess"), 100)
+    glUniform1f(glGetUniformLocation(textpipeline.shaderProgram, "constantAttenuation"), 0.001)
+    glUniform1f(glGetUniformLocation(textpipeline.shaderProgram, "linearAttenuation"), 0.1)
+    glUniform1f(glGetUniformLocation(textpipeline.shaderProgram, "quadraticAttenuation"), 0.01)
+    
 
     while not glfw.window_should_close(window):
 
@@ -893,6 +922,10 @@ def main():
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "projection"), 1, GL_TRUE, proyeccion)
 
+        glUseProgram(textpipeline.shaderProgram)
+        glUniformMatrix4fv(glGetUniformLocation(textpipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        glUniformMatrix4fv(glGetUniformLocation(textpipeline.shaderProgram, "projection"), 1, GL_TRUE, proyeccion)
+
         glUseProgram(MVPpipeline.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(MVPpipeline.shaderProgram, "view"), 1, GL_TRUE, view)
         glUniformMatrix4fv(glGetUniformLocation(MVPpipeline.shaderProgram, "projection"), 1, GL_TRUE, proyeccion)
@@ -916,8 +949,8 @@ def main():
 
 
         #Modelos
-        
-        glUseProgram(pipeline.shaderProgram)
+
+
         #Naves
 
         #convoy tierra
@@ -1226,11 +1259,11 @@ def main():
             tr.rotationZ(2.4 * time),
             tr.uniformScale(0.5)
         ])
-        anillos= sg.findNode(sistemaSolar, "anillosNode")
+        """ anillos= sg.findNode(sistemaSolar, "anillosNode")
         anillos.transform = tr.matmul([
             tr.rotationX(-0.1*np.pi),
             tr.rotationZ(2 * time),
-        ])
+        ]) """
 
         saturnotraslacion = sg.findNode(sistemaSolar, "sistemaSaturno")
         saturnotraslacion.transform = tr.matmul([
@@ -1278,7 +1311,7 @@ def main():
             tr.translate(0, 98.6, 0)
         ])
 
-        Rcometa = (10- 2*np.cos(np.pi*time/250))
+        """ Rcometa = (10- 2*np.cos(np.pi*time/250))
         cometaNode = sg.findNode(sistemaSolar, "cometaNode")
         cometaNode.transform = tr.matmul([
             tr.rotationY(-np.pi*time/250),
@@ -1286,17 +1319,17 @@ def main():
             tr.uniformScale(0.01)
         ])
         cometa = sg.findNode(sistemaSolar, "cometaTranslation")
-        cometa.transform = tr.translate(Rcometa*np.cos(np.pi*time/250), -1, Rcometa*np.sin(np.pi*time/250))
+        cometa.transform = tr.translate(Rcometa*np.cos(np.pi*time/250), -1, Rcometa*np.sin(np.pi*time/250)) """
         
 
 
 
         #graficar escena
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 1.0, 1.0, 1.0)
+        glUseProgram(pipeline.shaderProgram)
         sg.drawSceneGraphNode(figther, pipeline, "model")
 
-        glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ks"), 0, 0, 0)
-        sg.drawSceneGraphNode(sistemaSolar, pipeline, "model")
+        glUseProgram(textpipeline.shaderProgram)
+        sg.drawSceneGraphNode(sistemaSolar, textpipeline, "model")
 
 
         glUseProgram(MVPpipeline.shaderProgram)
