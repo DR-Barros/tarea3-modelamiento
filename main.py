@@ -265,33 +265,6 @@ def crearAnillo(N, R, r, g, b):
         ]
     return bs.Shape(vertices, indices)
 
-#Funcion crear cometa
-def crearCometa(N, r, g, b):
-    vertices = []
-    indices = []
-    angulo = 2 * np.pi
-    n = int(N/2)-1
-    for i in range(N):
-        indices += [N*n, i*n, ((i+1)*n)%(N*n)]
-        rand = random()/8
-        omega = i/N * angulo
-        for j in range(n):
-            theta = (j+1)/N * angulo*9/16
-            vertices += [
-                    np.sin(theta)*np.cos(omega), np.sin(theta)*np.sin(omega), np.cos(theta), abs(r-rand), abs(g-rand), abs(b-rand)
-                ]
-        for j in range(n-1):
-            indices += [
-                n*i+j, n*i+1+j, (n*(i+1)+j)%(N*n),
-                n*i+1+j, (n*(i+1)+j)%(N*n), (n*(i+1)+1+j)%(N*n),
-            ]
-        indices += [N*n+1, (i*n-1)%(N*n), ((i+1)*n-1)%(N*n)]
-    
-    vertices += [
-        0, 0, 1, r, g, b,
-        0, 0, -4, r, g, b 
-    ] 
-    return bs.Shape(vertices, indices)
 
 #post procesado de shapes para usar en lightning pipelines
 def postPL(Shape, color):
@@ -404,7 +377,8 @@ def createSystem(pipeline):
     neptunoShape.texture = es.textureSimpleSetup(getAssetPath("neptuno.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
     plutonShape = createGPUShape(esferaPhong(100), pipeline)
     plutonShape.texture = es.textureSimpleSetup(getAssetPath("pluton.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
-    cometaShape = createGPUShape(postPL(crearCometa(100, 136/255, 9/255, 123/255), (136/255, 9/255, 123/255)), pipeline)
+    cometaShape = createGPUShape(esferaPhong(100), pipeline)
+    cometaShape.texture = es.textureSimpleSetup(getAssetPath("cometa.jpg"), GL_REPEAT, GL_REPEAT, GL_LINEAR, GL_LINEAR)
 
     mercurioNode = sg.SceneGraphNode("mercurioNode")
     mercurioNode.transform = tr.uniformScale(0.1)
@@ -508,7 +482,7 @@ def createSystem(pipeline):
         uranoTranslation,
         neptunoTranslation,
         plutonTranslation,
-        #cometaTranslation
+        cometaTranslation
     ]
 
     return systemNode
@@ -1311,7 +1285,7 @@ def main():
             tr.translate(0, 98.6, 0)
         ])
 
-        """ Rcometa = (10- 2*np.cos(np.pi*time/250))
+        Rcometa = (10- 2*np.cos(np.pi*time/250))
         cometaNode = sg.findNode(sistemaSolar, "cometaNode")
         cometaNode.transform = tr.matmul([
             tr.rotationY(-np.pi*time/250),
@@ -1319,7 +1293,7 @@ def main():
             tr.uniformScale(0.01)
         ])
         cometa = sg.findNode(sistemaSolar, "cometaTranslation")
-        cometa.transform = tr.translate(Rcometa*np.cos(np.pi*time/250), -1, Rcometa*np.sin(np.pi*time/250)) """
+        cometa.transform = tr.translate(Rcometa*np.cos(np.pi*time/250), -1, Rcometa*np.sin(np.pi*time/250))
         
 
 
