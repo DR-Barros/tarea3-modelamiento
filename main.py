@@ -270,6 +270,62 @@ def cometaPhong(N):
     
     return bs.Shape(vertexData, indices)
 
+#Funcion cubo phong para estela
+def cuboPhong(r, g, b):
+    vertices =[
+        #cara 1
+        0.5, 0.5, -0.5, r, g, b, 0, 0, -1,
+        0.5, -0.5, -0.5, r, g, b, 0, 0, -1,
+        -0.5, 0.5, -0.5, r, g, b, 0, 0, -1,
+        -0.5, -0.5, -0.5, r, g, b, 0, 0, -1,
+        #cara 2
+        0.5, 0.5, 0.5, r, g, b, 0, 0, 1,
+        0.5, -0.5, 0.5, r, g, b, 0, 0, 1,
+        -0.5, 0.5, 0.5, r, g, b, 0, 0, 1,
+        -0.5, -0.5, 0.5, r, g, b, 0, 0, 1,
+        #cara 3
+        0.5, -0.5, 0.5, r, g, b, 0, -1, 0,
+        0.5, -0.5, -0.5, r, g, b, 0, -1, 0,
+        -0.5, -0.5, 0.5, r, g, b, 0, -1, 0,
+        -0.5, -0.5, -0.5, r, g, b, 0, -1, 0,
+        #cara 4
+        0.5, 0.5, 0.5, r, g, b, 0, 1, 0,
+        0.5, 0.5, -0.5, r, g, b, 0, 1, 0,
+        -0.5, 0.5, 0.5, r, g, b, 0, 1, 0,
+        -0.5, 0.5, -0.5, r, g, b, 0, 1, 0,
+        #cara 5
+        -0.5, 0.5, 0.5, r, g, b, -1, 0, 0,
+        -0.5, 0.5, -0.5, r, g, b, -1, 0, 0,
+        -0.5, -0.5, 0.5, r, g, b, -1, 0, 0,
+        -0.5, -0.5, -0.5, r, g, b, -1, 0, 0,
+        #cara 6
+        0.5, 0.5, 0.5, r, g, b, 1, 0, 0,
+        0.5, 0.5, -0.5, r, g, b, 1, 0, 0,
+        0.5, -0.5, 0.5, r, g, b, 1, 0, 0,
+        0.5, -0.5, -0.5, r, g, b, 1, 0, 0
+    ]
+    indices = [
+        #cara1
+        0, 1, 2,
+        1, 2, 3,
+        #cara2
+        4, 5, 6,
+        5, 6, 7,
+        #cara3
+        8, 9, 10,
+        9, 10, 11,
+        #cara4
+        12, 13, 14,
+        13, 14, 15,
+        #cara5
+        16, 17, 18,
+        17, 18, 19,
+        #cara6
+        20, 21, 22,
+        21, 22, 23
+    ]
+    return bs.Shape(vertices, indices)
+
 #curvas de bezier
 def bezier(P0, P1, P2, P3):
     # Generate a matrix concatenating the columns
@@ -705,6 +761,7 @@ def createFighter(pipeline):
     tieUVShape = createGPUShape(bs.readOFF(getAssetPath('tie_UV.off'), (0.1 , 0.1 ,0.1)), pipeline)
     triFighterShape = createGPUShape(bs.readOFF(getAssetPath('Tri_Fighter.off'), (0.3 , 0.3 ,0.9)), pipeline)
     xWingShape = createGPUShape(bs.readOFF(getAssetPath('XJ5 X-wing starfighter.off'), (0.9 , 0.9 ,0.9)), pipeline)
+    estelaBlueShape = createGPUShape(cuboPhong(0,0,1), pipeline)
 
     #Crear nodos por cada shape, con la escala de las naves
 
@@ -757,13 +814,16 @@ def createFighter(pipeline):
     ])
     triNode.childs += [triFighterShape]    
 
-
     xWingNode = sg.SceneGraphNode("xWingNode")
     xWingNode.transform = tr.matmul([
         tr.rotationX(np.pi/2),
         tr.uniformScale(0.005)
     ])
     xWingNode.childs += [xWingShape]
+
+    estelaBlueNode =sg.SceneGraphNode("estelaBlueNode")
+    estelaBlueNode.transform = tr.identity()
+    estelaBlueNode.childs += [estelaBlueShape]
 
     #convoy tierra
     earthconvoy = sg.SceneGraphNode("earthConvoy")
@@ -785,6 +845,9 @@ def createFighter(pipeline):
     destroyer1 = sg.SceneGraphNode("destroyer1")
     destroyer1.transform = tr.identity()
     destroyer1.childs += [destroyerNode, tieUVTraslation]
+    estelaTie = []
+    for i in range(10):
+        pass
     convoy = sg.SceneGraphNode("convoy")
     convoy.transform = tr.identity()
     convoy.childs += [destroyer1]
