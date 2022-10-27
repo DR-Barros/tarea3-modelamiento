@@ -74,9 +74,9 @@ class Controller:
         elif self.camType == 1:
             posicionFront = np.array([0.08, -0.05, 0.02])
             posicionAt = np.array([
-                destroyerCurve[step%1600, 0],
-                destroyerCurve[step%1600, 1],
-                destroyerCurve[step%1600, 2]
+                destroyerCurve[(step*4)%12800, 0],
+                destroyerCurve[(step*4)%12800, 1],
+                destroyerCurve[(step*4)%12800, 2]
             ])
             self.view = tr.lookAt(
                 posicionAt + posicionFront,
@@ -108,9 +108,9 @@ class Controller:
         
         elif self.camType ==5:
             posicionAt = np.array([
-                convoy3Curve[(step + 3)%2200, 0],
-                convoy3Curve[(step + 3)%2200, 1],
-                convoy3Curve[(step + 3)%2200, 2]
+                convoy3Curve[(step*10)%22000, 0],
+                convoy3Curve[(step*10)%22000, 1],
+                convoy3Curve[(step*10)%22000, 2]
             ])
             self.view = tr.lookAt(posicionAt*1.05 + np.array([0,0, 0.1]), posicionAt, np.array([0, 0, 1]))
         return self.view
@@ -349,6 +349,7 @@ def evaluarCurva(Matriz, N):
         
     return curve
 
+#Creamos las curvas para las naves
 #Curvas tie (destroyer)
 tie1_1 = bezier(
     np.array([[-0.03, 0, 0]]).T, 
@@ -362,8 +363,8 @@ tie1_2 = bezier(
     np.array([[-0.03, -0.03*4/3, 0]]).T, 
     np.array([[-0.03, 0., 0]]).T
     )
-tie1Curve1 = evaluarCurva(tie1_1, 100)
-tie1Curve2 = evaluarCurva(tie1_2, 100)
+tie1Curve1 = evaluarCurva(tie1_1, 150)
+tie1Curve2 = evaluarCurva(tie1_2, 150)
 tie1Curve = np.concatenate((tie1Curve1, tie1Curve2), axis = 0)
 destroyer_1 = bezier(
     np.array([[4, 2, 1]]).T,
@@ -389,10 +390,10 @@ destroyer_4 = bezier(
     np.array([[4, 2+8/3, 1]]).T,
     np.array([[4, 2, 1]]).T
 )
-destroyerCurve1 = evaluarCurva(destroyer_1, 200)
-destroyerCurve2 = evaluarCurva(destroyer_2, 600)
-destroyerCurve3 = evaluarCurva(destroyer_3, 200)
-destroyerCurve4 = evaluarCurva(destroyer_4, 600)
+destroyerCurve1 = evaluarCurva(destroyer_1, 1600)
+destroyerCurve2 = evaluarCurva(destroyer_2, 4800)
+destroyerCurve3 = evaluarCurva(destroyer_3, 1600)
+destroyerCurve4 = evaluarCurva(destroyer_4, 4800)
 destroyerCurve = np.concatenate((destroyerCurve1, destroyerCurve2, destroyerCurve3, destroyerCurve4), axis = 0)
 
 # Curvas convoy tierra
@@ -408,8 +409,8 @@ kontos_2 = bezier(
     np.array([[-0.229, 0.229*4/3, 0]]).T, 
     np.array([[-0.229, 0., 0]]).T
     )
-kontosCurve1 = evaluarCurva(kontos_1, 200)
-kontosCurve2 = evaluarCurva(kontos_2, 200)
+kontosCurve1 = evaluarCurva(kontos_1, 1000)
+kontosCurve2 = evaluarCurva(kontos_2, 1000)
 kontosCurve = np.concatenate((kontosCurve1, kontosCurve2), axis = 0)
 
 #Curvas convoy 2
@@ -425,8 +426,8 @@ convoy2_2 = bezier(
     np.array([[-1.1, 1.1*4/3, 0]]).T, 
     np.array([[-1.1, 0., 0]]).T
     )
-convoy2Curve1 = evaluarCurva(convoy2_1, 400)
-convoy2Curve2 = evaluarCurva(convoy2_2, 400)
+convoy2Curve1 = evaluarCurva(convoy2_1, 1000)
+convoy2Curve2 = evaluarCurva(convoy2_2, 1000)
 convoy2Curve = np.concatenate((convoy2Curve1, convoy2Curve2), axis = 0)
 
 #Curvas convoy 3
@@ -478,14 +479,14 @@ convoy3_curva4 = bezier(
     np.array([[-2-0.55, -3, -1]]).T,
     np.array([[-2, -3, -1]]).T 
 )
-convoy3Curve1 = evaluarCurva(convoy3_recta1, 400)
-convoy3Curve2 = evaluarCurva(convoy3_curva1, 150)
-convoy3Curve3 = evaluarCurva(convoy3_recta2, 400)
-convoy3Curve4 = evaluarCurva(convoy3_curva2, 150)
-convoy3Curve5 = evaluarCurva(convoy3_recta3, 400)
-convoy3Curve6 = evaluarCurva(convoy3_curva3, 150)
-convoy3Curve7 = evaluarCurva(convoy3_recta4, 400)
-convoy3Curve8 = evaluarCurva(convoy3_curva4, 150)
+convoy3Curve1 = evaluarCurva(convoy3_recta1, 4000)
+convoy3Curve2 = evaluarCurva(convoy3_curva1, 1500)
+convoy3Curve3 = evaluarCurva(convoy3_recta2, 4000)
+convoy3Curve4 = evaluarCurva(convoy3_curva2, 1500)
+convoy3Curve5 = evaluarCurva(convoy3_recta3, 4000)
+convoy3Curve6 = evaluarCurva(convoy3_curva3, 1500)
+convoy3Curve7 = evaluarCurva(convoy3_recta4, 4000)
+convoy3Curve8 = evaluarCurva(convoy3_curva4, 1500)
 convoy3Curve = np.concatenate((convoy3Curve1, convoy3Curve2, convoy3Curve3, convoy3Curve4, convoy3Curve5, convoy3Curve6, convoy3Curve7, convoy3Curve8), axis = 0)
 #nave2
 convoy3_1_recta1 = bezier(
@@ -536,14 +537,14 @@ convoy3_1_curva4 = bezier(
     np.array([[-2-0.594, -3.08, -1]]).T,
     np.array([[-2, -3.08, -1]]).T 
 )
-convoy3_1Curve1 = evaluarCurva(convoy3_1_recta1, 400)
-convoy3_1Curve2 = evaluarCurva(convoy3_1_curva1, 150)
-convoy3_1Curve3 = evaluarCurva(convoy3_1_recta2, 400)
-convoy3_1Curve4 = evaluarCurva(convoy3_1_curva2, 150)
-convoy3_1Curve5 = evaluarCurva(convoy3_1_recta3, 400)
-convoy3_1Curve6 = evaluarCurva(convoy3_1_curva3, 150)
-convoy3_1Curve7 = evaluarCurva(convoy3_1_recta4, 400)
-convoy3_1Curve8 = evaluarCurva(convoy3_1_curva4, 150)
+convoy3_1Curve1 = evaluarCurva(convoy3_1_recta1, 4000)
+convoy3_1Curve2 = evaluarCurva(convoy3_1_curva1, 1500)
+convoy3_1Curve3 = evaluarCurva(convoy3_1_recta2, 4000)
+convoy3_1Curve4 = evaluarCurva(convoy3_1_curva2, 1500)
+convoy3_1Curve5 = evaluarCurva(convoy3_1_recta3, 4000)
+convoy3_1Curve6 = evaluarCurva(convoy3_1_curva3, 1500)
+convoy3_1Curve7 = evaluarCurva(convoy3_1_recta4, 4000)
+convoy3_1Curve8 = evaluarCurva(convoy3_1_curva4, 1500)
 convoy3_1Curve = np.concatenate((convoy3_1Curve1, convoy3_1Curve2, convoy3_1Curve3, convoy3_1Curve4, convoy3_1Curve5, convoy3_1Curve6, convoy3_1Curve7, convoy3_1Curve8), axis = 0)
 #nave 3
 convoy3_2_recta1 = bezier(
@@ -594,14 +595,14 @@ convoy3_2_curva4 = bezier(
     np.array([[-2-0.5115, -2.93, -1]]).T,
     np.array([[-2, -2.93, -1]]).T 
 )
-convoy3_2Curve1 = evaluarCurva(convoy3_2_recta1, 400)
-convoy3_2Curve2 = evaluarCurva(convoy3_2_curva1, 150)
-convoy3_2Curve3 = evaluarCurva(convoy3_2_recta2, 400)
-convoy3_2Curve4 = evaluarCurva(convoy3_2_curva2, 150)
-convoy3_2Curve5 = evaluarCurva(convoy3_2_recta3, 400)
-convoy3_2Curve6 = evaluarCurva(convoy3_2_curva3, 150)
-convoy3_2Curve7 = evaluarCurva(convoy3_2_recta4, 400)
-convoy3_2Curve8 = evaluarCurva(convoy3_2_curva4, 150)
+convoy3_2Curve1 = evaluarCurva(convoy3_2_recta1, 4000)
+convoy3_2Curve2 = evaluarCurva(convoy3_2_curva1, 1500)
+convoy3_2Curve3 = evaluarCurva(convoy3_2_recta2, 4000)
+convoy3_2Curve4 = evaluarCurva(convoy3_2_curva2, 1500)
+convoy3_2Curve5 = evaluarCurva(convoy3_2_recta3, 4000)
+convoy3_2Curve6 = evaluarCurva(convoy3_2_curva3, 1500)
+convoy3_2Curve7 = evaluarCurva(convoy3_2_recta4, 4000)
+convoy3_2Curve8 = evaluarCurva(convoy3_2_curva4, 1500)
 convoy3_2Curve = np.concatenate((convoy3_2Curve1, convoy3_2Curve2, convoy3_2Curve3, convoy3_2Curve4, convoy3_2Curve5, convoy3_2Curve6, convoy3_2Curve7, convoy3_2Curve8), axis = 0)
 #Crear sistema solar scene graph
 def createSystem(pipeline):
@@ -762,6 +763,8 @@ def createFighter(pipeline):
     triFighterShape = createGPUShape(bs.readOFF(getAssetPath('Tri_Fighter.off'), (0.3 , 0.3 ,0.9)), pipeline)
     xWingShape = createGPUShape(bs.readOFF(getAssetPath('XJ5 X-wing starfighter.off'), (0.9 , 0.9 ,0.9)), pipeline)
     estelaBlueShape = createGPUShape(cuboPhong(0,0,1), pipeline)
+    estelaGreenShape = createGPUShape(cuboPhong(0,1,0), pipeline)
+    estelaRedShape = createGPUShape(cuboPhong(1,0,0), pipeline)
 
     #Crear nodos por cada shape, con la escala de las naves
 
@@ -825,6 +828,14 @@ def createFighter(pipeline):
     estelaBlueNode.transform = tr.identity()
     estelaBlueNode.childs += [estelaBlueShape]
 
+    estelaGreenNode =sg.SceneGraphNode("estelaGreenNode")
+    estelaGreenNode.transform = tr.identity()
+    estelaGreenNode.childs += [estelaGreenShape]
+
+    estelaRedNode =sg.SceneGraphNode("estelaRedNode")
+    estelaRedNode.transform = tr.identity()
+    estelaRedNode.childs += [estelaRedShape]
+
     #convoy tierra
     earthconvoy = sg.SceneGraphNode("earthConvoy")
     earthconvoy.transform = tr.translate(0.25, 0, 0)
@@ -835,6 +846,12 @@ def createFighter(pipeline):
     earthMove = sg.SceneGraphNode("earthMove")
     earthMove.transform =tr.identity()
     earthMove.childs += [earthOrbit] 
+    estelaKontos = []
+    for i in range(25):
+        estelaKontos += [sg.SceneGraphNode("estelaKontos"+str(i))]
+        estelaKontos[i].transform = tr.uniformScale(0.05)
+        estelaKontos[i].childs += [estelaRedNode]
+        earthOrbit.childs += [estelaKontos[i]]
 
     #Convoy 1
     #Tie
@@ -846,11 +863,20 @@ def createFighter(pipeline):
     destroyer1.transform = tr.identity()
     destroyer1.childs += [destroyerNode, tieUVTraslation]
     estelaTie = []
-    for i in range(10):
-        pass
+    for i in range(25):
+        estelaTie += [sg.SceneGraphNode("estelaTie"+str(i))]
+        estelaTie[i].transform = tr.uniformScale(0.05)
+        estelaTie[i].childs += [estelaBlueNode]
+        destroyer1.childs += [estelaTie[i]]
+    estelaDestroyer = []
     convoy = sg.SceneGraphNode("convoy")
     convoy.transform = tr.identity()
     convoy.childs += [destroyer1]
+    for i in range(25):
+        estelaDestroyer += [sg.SceneGraphNode("estelaDestroyer"+str(i))]
+        estelaDestroyer[i].transform = tr.uniformScale(0.05)
+        estelaDestroyer[i].childs += [estelaGreenNode]
+        convoy.childs += [estelaDestroyer[i]]
     
     #convoy 2
     corvette1 = sg.SceneGraphNode("corvette1")
@@ -903,6 +929,28 @@ def createFighter(pipeline):
 
     sceneNode = sg.SceneGraphNode("naves")
     sceneNode.childs += [usuario, convoy, earthMove, convoy2, convoy3]
+
+    #estelas
+    #convoy 2
+    estelacorvette1 = []
+    for i in range(25):
+        estelacorvette1 += [sg.SceneGraphNode("estelacorvette1"+str(i))]
+        estelacorvette1[i].transform = tr.uniformScale(0.05)
+        estelacorvette1[i].childs += [estelaBlueNode]
+        sceneNode.childs += [estelacorvette1[i]]
+    estelacorvette2 = []
+    for i in range(25):
+        estelacorvette2 += [sg.SceneGraphNode("estelacorvette2"+str(i))]
+        estelacorvette2[i].transform = tr.uniformScale(0.05)
+        estelacorvette2[i].childs += [estelaRedNode]
+        sceneNode.childs += [estelacorvette2[i]]
+    estelacorvette3 = []
+    for i in range(25):
+        estelacorvette3 += [sg.SceneGraphNode("estelacorvette3"+str(i))]
+        estelacorvette3[i].transform = tr.uniformScale(0.05)
+        estelacorvette3[i].childs += [estelaGreenNode]
+        sceneNode.childs += [estelacorvette3[i]]
+
 
     return sceneNode
 
@@ -1130,73 +1178,182 @@ def main():
         earthConvoy = sg.findNode(figther, "earthConvoy")
         earthConvoy.transform = tr.matmul([
             tr.translate(
-                kontosCurve[step%400, 0],
-                kontosCurve[step%400, 1],
-                kontosCurve[step%400, 2],
+                kontosCurve[(step*10)%2000, 0],
+                kontosCurve[(step*10)%2000, 1],
+                kontosCurve[(step*10)%2000, 2],
             ),
-            tr.rotationZ(np.pi*(step%400)/200),
+            tr.rotationZ(np.pi*((step*10)%2000)/1000),
             tr.rotationY(-np.pi/2)
         ])
+        estelaKontos = []
+        for i in range(25):
+            estelaKontos += [sg.findNode(figther, "estelaKontos"+str(i))]
+            estelaKontos[i].transform = tr.matmul([
+                tr.translate(
+                    kontosCurve[(step*10 - 50- i*2)%2000, 0],
+                    kontosCurve[(step*10 - 50- i*2)%2000, 1],
+                    kontosCurve[(step*10 - 50- i*2)%2000, 2],
+                ),
+                tr.rotationZ(np.pi*((step*10)%2000)/1000),
+                tr.uniformScale(0.005*(25-i/2)/25)
+            ])
 
 
         #Convoy 
-        convoy = sg.findNode(figther, "convoy")
         destroyer1 = sg.findNode(figther, "destroyer1")
+        destroyerPos = 4*step 
         tiePosition = sg.findNode(figther, "tieUVTraslation")
         tiePosition.transform = tr.matmul([
             tr.translate(
-                tie1Curve[step%200, 0],
-                tie1Curve[step%200, 1],
-                tie1Curve[step%200, 2],
+                tie1Curve[step%300, 0],
+                tie1Curve[step%300, 1],
+                tie1Curve[step%300, 2],
             ),
-            tr.rotationZ(-np.pi*(step%200)/100)
+            tr.rotationZ(-np.pi*(step%300)/150)
         ])
-        if step%1600<200:
-            convoy.transform = tr.translate(
-                destroyerCurve[step%1600, 0],
-                destroyerCurve[step%1600, 1],
-                destroyerCurve[step%1600, 2]
-            )
-        elif step%1600<800:
-            convoy.transform = tr.matmul([
+        estelaTie = []
+        for i in range(25):
+            estelaTie += [sg.findNode(figther, "estelaTie"+str(i))]
+            estelaTie[i].transform = tr.matmul([
                 tr.translate(
-                    destroyerCurve[step%1600, 0],
-                    destroyerCurve[step%1600, 1],
-                    destroyerCurve[step%1600, 2]
+                    tie1Curve[(step- 5 - i)%300, 0],
+                    tie1Curve[(step- 5 - i)%300, 1],
+                    tie1Curve[(step- 5 - i)%300, 2],
                 ),
-                tr.rotationZ(-np.pi*((step%1600)-200)/600)
+                tr.rotationZ(-np.pi*((step- 5 - i)%300)/150),
+                tr.uniformScale(0.001*(25-i/2)/25)
             ])
-            destroyer1.transform = tr.rotationY(-np.sin(np.pi*((step%1600)-200)/600)*np.pi/4)
-        elif step%1600<1000:
-            convoy.transform = tr.matmul([
+        estelaDestroyer = []
+        for i in range(25):
+            estelaDestroyer += [sg.findNode(figther, "estelaDestroyer"+str(i))]
+            if (destroyerPos-20 -i)%12800<1600:
+                estelaDestroyer[i].transform = tr.matmul([
+                    tr.translate(
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 0],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 1],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 2]
+                    ),
+                    tr.uniformScale(0.005*(25-i/2)/25)
+                ])
+                
+            elif (destroyerPos-20 -i)%12800<6400:
+                estelaDestroyer[i].transform = tr.matmul([
+                    tr.translate(
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 0],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 1],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 2]
+                    ),
+                    tr.rotationZ(-np.pi*(((destroyerPos-20 -i)%12800)-1600)/4800),
+                    tr.rotationY(-np.sin(np.pi*(((destroyerPos-20)%12800)-1600)/4800)*np.pi/4),
+                    tr.uniformScale(0.005*(25-i/2)/25)
+                ])
+            elif (destroyerPos-20 -i)%12800<8000:
+                estelaDestroyer[i].transform = tr.matmul([
+                    tr.translate(
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 0],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 1],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 2]
+                    ),
+                    tr.rotationZ(-np.pi),
+                    tr.uniformScale(0.005*(25-i/2)/25)
+                ])
+            else:
+                estelaDestroyer[i].transform = tr.matmul([
+                    tr.translate(
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 0],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 1],
+                        destroyerCurve[(destroyerPos-20 -i)%12800, 2]
+                    ),
+                    tr.rotationZ(-np.pi -np.pi*(((destroyerPos-20 -i)%12800)-8000)/4800),
+                    tr.rotationY(-np.sin(np.pi*(((destroyerPos-20)%12800)-8000)/4800)*np.pi/4),
+                    tr.uniformScale(0.005*(25-i/2)/25)
+                ])
+        if destroyerPos%12800<1600:
+            destroyer1.transform = tr.translate(
+                destroyerCurve[destroyerPos%12800, 0],
+                destroyerCurve[destroyerPos%12800, 1],
+                destroyerCurve[destroyerPos%12800, 2]
+            )
+        elif destroyerPos%12800<6400:
+            destroyer1.transform = tr.matmul([
                 tr.translate(
-                    destroyerCurve[step%1600, 0],
-                    destroyerCurve[step%1600, 1],
-                    destroyerCurve[step%1600, 2]
+                    destroyerCurve[destroyerPos%12800, 0],
+                    destroyerCurve[destroyerPos%12800, 1],
+                    destroyerCurve[destroyerPos%12800, 2]
+                ),
+                tr.rotationZ(-np.pi*((destroyerPos%12800)-1600)/4800),
+                tr.rotationY(-np.sin(np.pi*((destroyerPos%12800)-1600)/4800)*np.pi/4)
+            ])
+        elif destroyerPos%12800<8000:
+            destroyer1.transform = tr.matmul([
+                tr.translate(
+                    destroyerCurve[destroyerPos%12800, 0],
+                    destroyerCurve[destroyerPos%12800, 1],
+                    destroyerCurve[destroyerPos%12800, 2]
                 ),
                 tr.rotationZ(-np.pi)
             ])
         else:
-            convoy.transform = tr.matmul([
+            destroyer1.transform = tr.matmul([
                 tr.translate(
-                    destroyerCurve[step%1600, 0],
-                    destroyerCurve[step%1600, 1],
-                    destroyerCurve[step%1600, 2]
+                    destroyerCurve[destroyerPos%12800, 0],
+                    destroyerCurve[destroyerPos%12800, 1],
+                    destroyerCurve[destroyerPos%12800, 2]
                 ),
-                tr.rotationZ(-np.pi -np.pi*((step%1600)-1000)/600)
+                tr.rotationZ(-np.pi -np.pi*((destroyerPos%12800)-8000)/4800),
+                tr.rotationY(-np.sin(np.pi*((destroyerPos%12800)-8000)/4800)*np.pi/4)
             ])
-            destroyer1.transform = tr.rotationY(-np.sin(np.pi*((step%1600)-1000)/600)*np.pi/4)
 
         #Convoy2
         convoy2 = sg.findNode(figther, "convoy2")
         convoy2.transform = tr.matmul([
             tr.translate(
-                convoy2Curve[step%800, 0],
-                convoy2Curve[step%800, 1],
-                convoy2Curve[step%800, 2]
+                convoy2Curve[step%2000, 0],
+                convoy2Curve[step%2000, 1],
+                convoy2Curve[step%2000, 2]
             ),
-            tr.rotationZ(np.pi*(step%800)/400)
+            tr.rotationZ(np.pi*(step%2000)/1000)
         ])
+        estelacorvette1 = []
+        for i in range(25):
+            estelacorvette1 += [sg.findNode(figther, "estelacorvette1"+str(i))]
+            estelacorvette1[i].transform = tr.matmul([
+                tr.translate(
+                    convoy2Curve[(step- 10 - i)%2000, 0],
+                    convoy2Curve[(step- 10 - i)%2000, 1],
+                    convoy2Curve[(step- 10 - i)%2000, 2],
+                ),
+                tr.rotationZ(-np.pi*((step- 10 - i)%2000)/1000),
+                tr.rotationY(np.pi/4),
+                tr.uniformScale(0.005*(25-i/2)/25)
+            ])
+        #No cumplen con lo esperado, crear sus propias rutas para cada nave
+        """ estelacorvette2 = []
+        for i in range(25):
+            estelacorvette2 += [sg.findNode(figther, "estelacorvette2"+str(i))]
+            estelacorvette2[i].transform = tr.matmul([
+                tr.translate(
+                    convoy2Curve[(step- 10 - i)%2000, 0]-0.04,
+                    convoy2Curve[(step- 10 - i)%2000, 1]+0.04,
+                    convoy2Curve[(step- 10 - i)%2000, 2]-0.02,
+                ),
+                tr.rotationZ(-np.pi*((step- 10 - i)%2000)/1000),
+                tr.rotationY(np.pi/4),
+                tr.uniformScale(0.005*(25-i/2)/25)
+            ])
+        estelacorvette3 = []
+        for i in range(25):
+            estelacorvette3 += [sg.findNode(figther, "estelacorvette3"+str(i))]
+            estelacorvette3[i].transform = tr.matmul([
+                tr.translate(
+                    convoy2Curve[(step- 10 - i)%2000, 0]+0.04,
+                    convoy2Curve[(step- 10 - i)%2000, 1]+0.04,
+                    convoy2Curve[(step- 10 - i)%2000, 2]-0.02,
+                ),
+                tr.rotationZ(-np.pi*((step- 10 - i)%2000)/1000),
+                tr.rotationY(np.pi/4),
+                tr.uniformScale(0.005*(25-i/2)/25)
+            ]) """
         corvette = sg.findNode(figther, "corvetteNode")
         corvette.transform =  tr.matmul([
             tr.rotationY(np.pi/4),
@@ -1205,221 +1362,222 @@ def main():
         ])
 
         #Convoy3
-        if step%2200 < 400:
+        convoy3Pos = step*10
+        if convoy3Pos%22000 < 4000:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(np.pi/2)
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(np.pi/2)
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
                 tr.rotationZ(np.pi/2)
             ])
             print("recta1")
-        elif step%2200 < 550:
+        elif convoy3Pos%22000 < 5500:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi/2 + np.pi*(step%2200-400)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-400)/150))
+                tr.rotationZ(np.pi/2 + np.pi*(convoy3Pos%22000-4000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-4000)/1500))
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi/2 + np.pi*(step%2200-400)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-400)/150))
+                tr.rotationZ(np.pi/2 + np.pi*(convoy3Pos%22000-4000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-4000)/1500))
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
-                tr.rotationZ(np.pi/2 + np.pi*(step%2200-400)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-400)/150))
+                tr.rotationZ(np.pi/2 + np.pi*(convoy3Pos%22000-4000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-4000)/1500))
             ])
             print("curva1")
-        elif step%2200 < 950:
+        elif convoy3Pos%22000 < 9500:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(np.pi)
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(np.pi)
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
                 tr.rotationZ(np.pi)
             ])
             print("recta2")
-        elif step%2200 < 1100:
+        elif convoy3Pos%22000 < 11000:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi + np.pi*(step%2200-950)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-950)/150))
+                tr.rotationZ(np.pi + np.pi*(convoy3Pos%22000-9500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-9500)/1500))
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi + np.pi*(step%2200-950)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-950)/150))
+                tr.rotationZ(np.pi + np.pi*(convoy3Pos%22000-9500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-9500)/1500))
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
-                tr.rotationZ(np.pi + np.pi*(step%2200-950)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-950)/150))
+                tr.rotationZ(np.pi + np.pi*(convoy3Pos%22000-9500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-9500)/1500))
             ])
             print("curva2")
-        elif step%2200 < 1500:
+        elif convoy3Pos%22000 < 15000:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(3*np.pi/2)
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
                 tr.rotationZ(3*np.pi/2)
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
                 tr.rotationZ(3*np.pi/2)
             ])
             print("recta3")
-        elif step%2200 < 1650:
+        elif convoy3Pos%22000 < 16500:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(3*np.pi/2 + np.pi*(step%2200-1500)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-1500)/150))
+                tr.rotationZ(3*np.pi/2 + np.pi*(convoy3Pos%22000-15000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-15000)/1500))
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(3*np.pi/2 + np.pi*(step%2200-1500)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-1500)/150))
+                tr.rotationZ(3*np.pi/2 + np.pi*(convoy3Pos%22000-15000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-15000)/1500))
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
-                tr.rotationZ(3*np.pi/2 + np.pi*(step%2200-1500)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-1500)/150))
+                tr.rotationZ(3*np.pi/2 + np.pi*(convoy3Pos%22000-15000)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-15000)/1500))
             ])
             print("curva3")
-        elif step%2200 < 2050:
+        elif convoy3Pos%22000 < 20500:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 )
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 )
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 )
             ])
             print("recta4")
         else:
             fromSPtransform = tr.matmul([
                 tr.translate(
-                    convoy3_1Curve[step%2200, 0],
-                    convoy3_1Curve[step%2200, 1],
-                    convoy3_1Curve[step%2200, 2]
+                    convoy3_1Curve[convoy3Pos%22000, 0],
+                    convoy3_1Curve[convoy3Pos%22000, 1],
+                    convoy3_1Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi*(step%2200-2050)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-2050)/150))
+                tr.rotationZ(np.pi*(convoy3Pos%22000-20500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-20500)/1500))
             ])
             triTransform = tr.matmul([
                 tr.translate(
-                    convoy3_2Curve[step%2200, 0],
-                    convoy3_2Curve[step%2200, 1],
-                    convoy3_2Curve[step%2200, 2]
+                    convoy3_2Curve[convoy3Pos%22000, 0],
+                    convoy3_2Curve[convoy3Pos%22000, 1],
+                    convoy3_2Curve[convoy3Pos%22000, 2]
                 ),
-                tr.rotationZ(np.pi*(step%2200-2050)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-2050)/150))
+                tr.rotationZ(np.pi*(convoy3Pos%22000-20500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-20500)/1500))
             ])
             nabooTransform = tr.matmul([
                 tr.translate(
-                    convoy3Curve[(step + 3)%2200, 0],
-                    convoy3Curve[(step + 3)%2200, 1],
-                    convoy3Curve[(step + 3)%2200, 2]
+                    convoy3Curve[(convoy3Pos)%22000, 0],
+                    convoy3Curve[(convoy3Pos)%22000, 1],
+                    convoy3Curve[(convoy3Pos)%22000, 2]
                 ),
-                tr.rotationZ(np.pi*(step%2200-2050)/300),
-                tr.rotationY(np.pi/4*np.sin(np.pi*(step%2200-2050)/150))
+                tr.rotationZ(np.pi*(convoy3Pos%22000-20500)/3000),
+                tr.rotationY(np.pi/4*np.sin(np.pi*(convoy3Pos%22000-20500)/1500))
             ])
             print("curva4")
         fromSP = sg.findNode(figther, "fromSP")
